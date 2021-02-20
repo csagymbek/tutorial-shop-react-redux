@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { useSelector } from "react-redux";
+import { selectCourses } from "./coursesSlice";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Courses } from "./Courses";
+import { Course } from "./Course";
+import { AddCourse } from "./AddCourse";
 
-function App() {
+export const App = () => {
+  const courses = useSelector(selectCourses);
+  console.log(courses);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Router>
+      <div className="app">
+        <div className="header">
+          <h1>The best place to sell your courses online!</h1>
+          <Link to="/addCourse" className="header__button">
+            Sell a course
+          </Link>
+        </div>
 
-export default App;
+        <Switch>
+          <Route path="/" exact>
+            <div className="courses">
+              {courses.map((course) => (
+                <Link to={`/${course.id}`} className="link" key={course.id}>
+                  <Courses course={course} />
+                </Link>
+              ))}
+            </div>
+          </Route>
+          <Route path="/addCourse">
+            <AddCourse />
+          </Route>
+          <Route path="/:id">
+            <Course />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
+};
